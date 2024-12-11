@@ -1,0 +1,12 @@
+---
+# defaults file for ros
+ros_apt_key: "https://raw.githubusercontent.com/ros/rosdistro/master/ros.key"
+ros_version: 1
+
+
+# ros 1
+ros1_apt_uri: "http://packages.ros.org/ros/ubuntu"
+
+# ros 2
+ros2_apt_uri: "http://packages.ros.org/ros2/ubuntu"
+

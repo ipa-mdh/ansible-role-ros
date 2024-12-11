@@ -1,0 +1,66 @@
+---
+# tasks file for ros
+- name: install locales
+  become: true
+  apt:
+    name: locales
+    state: latest
+
+- name: Ensure a locale exists
+  become: true
+  community.general.locale_gen:
+    name: en_US.UTF-8
+    state: present
+
+- name: Update local
+  become: true
+  raw: update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
+
+- name: install curl gnupg2 lsb-release
+  become: true
+  apt:
+    pkg:
+      - curl
+      - gnupg2
+      - lsb-release
+
+- name: add ros key
+  become: true
+  ansible.builtin.apt_key:
+    url: "{{ ros_apt_key }}"
+    state: present
+
+- name: Add ROS1 repository into sources list
+  become: true
+  ansible.builtin.apt_repository:
+    repo: deb "{{ ros1_apt_uri }}" "{{ ansible_lsb.codename }}" main
+    state: present
+    filename: ros
+  when: ros_version == 1
+
+- name: install ROS1 packages
+  become: true
+  apt:
+    pkg:
+      - ros-noetic-ros-base
+    update_cache: yes
+    state: latest
+  when: ros_version == 1
+
+
+- name: Add ros 2 repository into sources list
+  become: true
+  ansible.builtin.apt_repository:
+    repo: deb "{{ ros2_apt_uri }}" "{{ ansible_lsb.codename }}" main
+    state: present
+    filename: ros2
+  when: ros_version == 2
+
+- name: install ROS2 packages
+  become: true
+  apt:
+    pkg:
+      - ros-foxy-ros-base
+    update_cache: yes
+    state: latest
+  when: ros_version == 2
